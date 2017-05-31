@@ -20,15 +20,19 @@ def get_data(use_args=True):
 
     now = dt.now()
 
-    regex = r'^[0-9]{1,2}:?[0-9]{2}$'
+    regex = r'^([0-9]{1,2}:?[0-9]{2}|[0-9]{1,2})$'
     use_cmnd_arg = use_args and len(sys.argv) > 1 and match(regex, sys.argv[1])
 
     # If command line argument is not given (or is bad format), use current time
     if use_cmnd_arg:
         time_data = sys.argv[1]
+        num = len(time_data)
         time = time_data.split(':')
         if len(time) < 2:
-            time_data = time_data.zfill(4)
+            if num > 2:
+                time_data = time_data.zfill(4) # could use rjust(4, '0')
+            else:
+                time_data = time_data.ljust(4, '0') if num == 2 else time_data.ljust(3, '0').rjust(4, '0')
             time = [time_data[:2], time_data[2:]]
     else:
         time = strftime("%I:%M").split(':')
@@ -81,7 +85,7 @@ def output_data(trips):
         times.append((dt.strptime(start, from_format), dt.strptime(end, from_format)))
 
     for t1,t2 in times:
-        print "{} -> {}".format(t1.strftime(to_format), t2.strftime(to_format))
+        print("{} -> {}".format(t1.strftime(to_format), t2.strftime(to_format)))
 
 def main():
     resp = {}
