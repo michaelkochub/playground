@@ -13,6 +13,16 @@ def validate_time(t):
     hrs = time_data[0]
     mins = '0' if len(time_data) < 2 else time_data[1]
 
+    if ':' in t:
+        return t.split(':')
+    else:
+        if len(t) in (1, 2):
+            hrs, mins = t, 0
+        elif len(t) == 3:
+            hrs, mins = t[0], t[1:]
+        else:
+            hrs, mins = t[:2], t[2:]
+
     # api will error if minute value is single digit
     return hrs, mins.zfill(2)
 
