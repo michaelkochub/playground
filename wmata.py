@@ -4,6 +4,20 @@ from time import strftime, strptime
 import sys
 from re import match
 
+def validate_time(t):
+    regex = r'^([0-9]{1,2}:?[0-9]{2}|[0-9]{1,2})$'
+    if not match(regex, t):
+        return False
+
+    time_data = t.split(':')
+    hrs = time_data[0]
+    mins = '0' if len(time_data) < 2 else time_data[1]
+
+    # api will error if minute value is single digit
+    return hrs, mins.zfill(2)
+
+
+
 def get_data(use_args=True):
     # base uri
     url = 'https://www.wmata.com/node/wmata/wmataAPI/tripPlanner'
@@ -20,24 +34,16 @@ def get_data(use_args=True):
 
     now = dt.now()
 
-    regex = r'^([0-9]{1,2}:?[0-9]{2}|[0-9]{1,2})$'
-    use_cmnd_arg = use_args and len(sys.argv) > 1 and match(regex, sys.argv[1])
+    use_cmnd_arg = use_args and len(sys.argv) > 1
+    time = ()
 
     # If command line argument is not given (or is bad format), use current time
     if use_cmnd_arg:
-        time_data = sys.argv[1]
-        num = len(time_data)
-        time = time_data.split(':')
-        if len(time) < 2:
-            if num > 2:
-                time_data = time_data.zfill(4) # could use rjust(4, '0')
-            else:
-                if num == 1:
-                    time_data = time_data.rjust(2, '0')
-                time_data = time_data.ljust(4, '0')
-            time = [time_data[:2], time_data[2:]]
-    else:
+        time = validate_time(sys.argv[1])
+
+    if not (use_cmnd_arg and time):
         time = strftime("%I:%M").split(':')
+        period_leaving = strftime("%p")
 
     hour_leaving = time[0]
     minute_leaving = time[1]
@@ -93,18 +99,10 @@ def main():
     resp = {}
     trips = {}
 
-    # try:
-    #     resp = get_data()
-    #     trips = resp['Response']['Plantrip']
-    # except KeyError:
-    #     # the json response returned is something like { "Error": { ... } }
-    #     # which is usually caused by bad values in the query params
-    #     # such as hour_leaving = 57
-    #     resp = get_data(use_args=False)
-    #     trips = resp['Response']['Plantrip']
-
-    # Better approach
     resp = get_data()
+    # the json response returned is something like { "Error": { ... } }
+    # which is usually caused by bad values in the query params
+    # such as hour_leaving = 57 or one-character minute_leaving
     if not('Response' in resp and 'Plantrip' in resp['Response']):
         resp = get_data(use_args=False)
     trips = resp['Response']['Plantrip']
