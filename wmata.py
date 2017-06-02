@@ -32,7 +32,9 @@ def get_data(use_args=True):
             if num > 2:
                 time_data = time_data.zfill(4) # could use rjust(4, '0')
             else:
-                time_data = time_data.ljust(4, '0') if num == 2 else time_data.ljust(3, '0').rjust(4, '0')
+                if num == 1:
+                    time_data = time_data.rjust(2, '0')
+                time_data = time_data.ljust(4, '0')
             time = [time_data[:2], time_data[2:]]
     else:
         time = strftime("%I:%M").split(':')
