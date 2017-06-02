@@ -6,8 +6,11 @@ a heterogeneous blend of miscellaneous scripts and unrelated code samples I don'
 ### motivation
 typically I like to get my hands dirty when reading through some documentation or checking out a tutorial
 
-### steps:
+### steps
 ```sh
 $ cd playground
 $ find . -name '*.py' | xargs -L 1 python # Go crazy
 ```
+
+### license
+MIT
