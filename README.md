@@ -14,5 +14,3 @@ $ find . -name '*.py' | xargs -L 1 python # Go crazy
 
 ### license
 MIT
-
-test change
