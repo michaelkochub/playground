@@ -1,6 +1,12 @@
 const { h, app } = hyperapp
 /** @jsx h */
 
+/*
+ * Basic To Do List with
+ * 'Add Item' and 'Clear List'
+ * features
+ */
+
 app({
   state: {
     items: ["garden", "bathe", "walk"],
