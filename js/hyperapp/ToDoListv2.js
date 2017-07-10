@@ -30,9 +30,17 @@ app({
         placeholder="Delete Item Number..."
         onblur={e => actions.setDelete(e.target.value)}
         value="" />
-      <button onclick={actions.deleteItem}>Delete Item</button>
+      <button 
+        onclick={actions.deleteItem}
+        disabled={state.items.length <= 0}>
+        Delete Item
+      </button>
       <br />
-      <button onclick={actions.clearList}>Clear List</button>
+      <button 
+        onclick={actions.clearList}
+        disabled={state.items.length <= 0}>
+        Clear List
+      </button>
     </main>
   ),
   actions: {
