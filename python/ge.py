@@ -15,11 +15,13 @@ def main():
 def copy_current():
     call(COMMAND, shell=True)
 
-def write_new():
+def get_email():
     num = randint(MIN, MAX)
+    return EMAIL.format(num=num)
+
+def write_new():
     with open(FILE, 'w+') as f:
-        next_email = EMAIL.format(num=num)
-        f.write(next_email)
+        f.write(get_email())
 
 if __name__ == '__main__':
     main()
